@@ -1,9 +1,9 @@
 ---
 title: "Lab 05 - Data Wrangling"
 output:
-  github_document: default
-link-citations: true
-always_allow_html: true
+  html_document:
+    html_preview: false
+link-citations: yes
 ---
 
 # Learning goals
