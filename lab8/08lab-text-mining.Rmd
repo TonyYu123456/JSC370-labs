@@ -1,13 +1,13 @@
 ---
 title: "Lab 08 - Text Mining/NLP"
 output:
-  html_document: default
   github_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(eval = F, include  = T)
+knitr::opts_chunk$set(eval = T, include  = T)
 ```
 
 # Learning goals
@@ -36,7 +36,7 @@ You should load in `tidyverse`, (or `data.table`), `tidytext`, `wordcloud2`, `tm
 
 Loading in reference transcription samples from https://www.mtsamples.com/
 
-```{r eval=FALSE}
+```{r}
 library(tidytext)
 library(tidyverse)
 library(wordcloud2)
@@ -55,7 +55,7 @@ head(mt_samples)
 
 We can use `count()` from `dplyr` to figure out how many different medical specialties are in the data. Are these categories related? overlapping? evenly distributed? Make a bar plot.
 
-```{r eval=FALSE}
+```{r}
 mt_samples |>
   count(medical_specialty, sort = TRUE) |>
   ggplot(aes(fct_reorder(medical_specialty,n),n)) +
@@ -75,7 +75,7 @@ mt_samples |>
 
 ### Explain what we see from this result. Does it makes sense? What insights (if any) do we get?
 
-```{r eval=FALSE}
+```{r}
 tokens <- mt_samples |>
   select(transcription) |>
   unnest_tokens(word, transcription) |>
@@ -106,7 +106,7 @@ tokens |>
 
 ### What do we see when you remove stopwords and then when you filter further? Does it give us a better idea of what the text is about?
 
-```{r eval=FALSE}
+```{r}
 head(stopwords("english"))
 length(stopwords("english"))
 head(stop_words)
@@ -127,7 +127,7 @@ tokens2 |>
 
 tokens2 |>
   count(word, sort = TRUE) |>
-  wordcloud2(size = 0.4, color = "random-light", backgroundColor = "dodgerblue")
+  wordcloud2(size = 0.5, color = "random-light", backgroundColor = "dodgerblue")
 ```
 
 
@@ -138,7 +138,7 @@ tokens2 |>
 
 Repeat question 2, but this time tokenize into bi-grams. How does the result change if you look at tri-grams? Note we need to remove stopwords a little differently. You don't need to recreate the wordclouds.
 
-```{r eval=FALSE}
+```{r}
 stop_words2 <- c("en", "mm", "mg", "count", stop_words$word)
 sw_start <- paste0("^", paste(stop_words2, collapse=" |^"), "$")
 sw_end <- paste0("", paste(stop_words2, collapse="$| "), "$")
@@ -160,13 +160,14 @@ tokens_bigram %>%
   coord_flip() +
   theme_bw()
 ```
+
 --- The most frequent bi-grams, such as "preoperative diagnosis," "postoperative diagnosis," and "blood pressure," highlight key medical procedures, patient conditions, and documentation phrases commonly used in clinical settings.
 
 ## Question 5: Examining words
 
 Using the results from the bigram, pick a word and count the words that appear before and after it, and create a plot of the top 20.
 
-```{r eval=FALSE}
+```{r}
 library(stringr)
 # e.g. patient, blood, preoperative...
 tokens_bigram |>
@@ -188,7 +189,7 @@ tokens_bigram |>
 Which words are most used in each of the specialties? You can use `group_by()` and `top_n()` from `dplyr` to have the calculations be done within each specialty. Remember to remove stopwords. How about the 5 most used words?
 
 
-```{r eval=FALSE}
+```{r}
 mt_samples |>
    unnest_tokens(word, transcription) |>
    anti_join(stop_words, by = "word") |>
